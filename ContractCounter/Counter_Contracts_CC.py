@@ -1,3 +1,18 @@
+'''
+@Author Igor Natanael
+
+WHAT IS IT?
+This script count the number of clauses of contracts in programs
+written in C# using the library of "CodeContracts".
+
+HOW TO EXECUTE?
+You have to execute inside the project folder, and then it will 
+search inside all the sub-folders archives with these extensions
+and calculate the numbers of lines of code (LOC) and lines of
+CodeContracts (LOCC).
+'''
+
+
 import os
 from os import listdir
 from os.path import isfile, join
