@@ -45,16 +45,16 @@ def loc(fname):
         count_com = 0
 	
 	for i in range(len(content)):
-		if (ENSURES in content[i] or POS in content[i]) and (AT in content[i] or AT2 in content[i] or AT1 in content[i] or):
+		if (ENSURES in content[i] or POS in content[i]) and (AT in content[i]):
 			pos += 1
 			print content[i]
-		elif (REQUIRES in content[i] or PRE in content [i]) and (AT in content[i] or AT2 in content[i] or AT1 in content[i] or):
+		elif (REQUIRES in content[i] or PRE in content [i]) and (AT in content[i]):
 			pre += 1
 			print content[i]
-		elif INVAR in content[i] and (AT in content[i] or AT2 in content[i] or AT1 in content[i] or):
+		elif INVAR in content[i] and (AT in content[i]):
 			inv += 1
 			print content[i]
-		elif CONST in content[i] and (AT in content[i] or AT2 in content[i] or AT1 in content[i] or):
+		elif CONST in content[i] and (AT in content[i]):
 			cons += 1
 			print content[i]
 		
