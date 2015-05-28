@@ -1,3 +1,16 @@
+'''
+@Author Igor Natanael
+
+WHAT IS IT?
+This script count the number of clauses of contracts in programs 
+with extension .java, .jml, .spec, .java-refined and jml-refined.
+
+HOW TO EXECUTE?
+You have to execute inside the project folder, and then it will 
+search inside all the sub-folders archives with these extensions
+and calculate the numbers of lines of code (LOC), preconditions
+(PRE), postconditions (POST) and invariants (INV).
+'''
 
 import os
 from os import listdir
@@ -48,7 +61,7 @@ def loc(fname):
 
 def counter_loc(folname):
     count = 0
-    only_cs_files = [ f for f in listdir(folname) if (f[-5:] == ".java") and isfile(join(folname,f)) ]
+    only_cs_files = [ f for f in listdir(folname) if (f[-5:] == ".java" or f[-4:] == ".jml" or f[-5:] == ".spec" or f[-13:] == ".java-refined" or f[-12:] == ".jml-refined") and isfile(join(folname,f)) ]
     for i in only_cs_files:
         count += loc(folname+"/" +i)
     return count
