@@ -81,7 +81,8 @@ def total_loc(folname):
         count += counter_loc(i)
     return count
 	
-print "LOC: " + str(total_loc(mypath))
+#print "LOC: " + str(total_loc(mypath))
+total_loc(mypath)
 print "PRE: "+ str(pre)
 print "POST: "+ str(pos)
 print "INV: "+ str(inv)
