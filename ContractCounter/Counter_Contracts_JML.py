@@ -45,23 +45,32 @@ def loc(fname):
         count_com = 0
 	
 	for i in range(len(content)):
-		if (ENSURES in content[i] or POS in content[i]) and (AT in content[i]):
-			pos += 1
-			print content[i]
-		elif (REQUIRES in content[i] or PRE in content [i]) and (AT in content[i]):
-			pre += 1
-			print content[i]
-		elif INVAR in content[i] and (AT in content[i]):
-			inv += 1
-			print content[i]
-		elif CONST in content[i] and (AT in content[i]):
-			cons += 1
-			print content[i]
-		
+		if (AT in content[i] and "/*" in content[i]):
+			while (i < len(content)-1):
+				
+				if (ENSURES in content[i] or POS in content[i]):
+					pos += 1
+					print content[i]
+				elif (REQUIRES in content[i] or PRE in content [i]):
+					pre += 1
+					print content[i]
+				elif INVAR in content[i]:
+					inv += 1
+					print content[i]
+				elif CONST in content[i]:
+					cons += 1
+					print content[i]
+				
+				if "*/" in content[i] and AT in content[i]:
+					break
+				
+				i += 1
+	
+	for i in range(len(content)):
 		if content[i].strip()[:2] == "//":
 			count_com += 1
 		elif content[i].strip()[:2] == "/*":
-			while (content[i].strip()[-2:] != "*/" and i < len(content)):
+			while (content[i].strip()[-2:] != "*/" and i < len(content)-1):
 				count_com += 1
 				i += 1
 	count = len(content) - count_com
@@ -88,4 +97,3 @@ print "POST: "+ str(pos)
 print "INV: "+ str(inv)
 print "CONS: "+ str(cons)
 
-raw_input()
