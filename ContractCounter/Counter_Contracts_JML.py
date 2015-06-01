@@ -1,5 +1,5 @@
 '''
-@Author Igor Natanael
+@Author Igor Natanael and Alysson Milanez
 WHAT IS IT?
 This script count the number of clauses of contracts in programs 
 with extension .java, .jml, .spec, .java-refined and jml-refined.
