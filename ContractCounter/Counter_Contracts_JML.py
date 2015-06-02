@@ -25,8 +25,7 @@ POS = "post"
 INVAR = "invariant"
 CONST = "constraint"
 AT = "@"
-AT2 = "//@"
-AT3 = "/*@"
+
 
 
 mypath = os.getcwd()
@@ -45,21 +44,35 @@ def loc(fname):
         count_com = 0
 	
 	for i in range(len(content)):
-		if (AT in content[i] and "/*" in content[i]):
+		if (AT in content[i] and "//" in content[i]):
+			if (ENSURES in content[i] or POS in content[i]):
+				pos += 1
+				#print content[i]
+			elif (REQUIRES in content[i] or PRE in content [i]):
+				pre += 1
+				#print content[i]
+			elif INVAR in content[i]:
+				inv += 1
+				#print content[i]
+			elif CONST in content[i]:
+				cons += 1
+				#print content[i]
+		elif ((AT in content[i] and "/*" in content[i])):
+
 			while (i < len(content)-1):
 				
 				if (ENSURES in content[i] or POS in content[i]):
 					pos += 1
-					print content[i]
+					#print content[i]
 				elif (REQUIRES in content[i] or PRE in content [i]):
 					pre += 1
-					print content[i]
+					#print content[i]
 				elif INVAR in content[i]:
 					inv += 1
-					print content[i]
+					#print content[i]
 				elif CONST in content[i]:
 					cons += 1
-					print content[i]
+					#print content[i]
 				
 				if "*/" in content[i] and AT in content[i]:
 					break
@@ -95,4 +108,3 @@ print "PRE: "+ str(pre)
 print "POST: "+ str(pos)
 print "INV: "+ str(inv)
 print "CONS: "+ str(cons)
-
