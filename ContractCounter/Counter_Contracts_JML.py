@@ -60,20 +60,21 @@ def loc(fname):
 		elif ((AT in content[i] and "/*" in content[i])):
 
 			while (i < len(content)-1):
-				
-				if (ENSURES in content[i] or POS in content[i]):
-					pos += 1
-					#print content[i]
-				elif (REQUIRES in content[i] or PRE in content [i]):
-					pre += 1
-					#print content[i]
-				elif INVAR in content[i]:
-					inv += 1
-					#print content[i]
-				elif CONST in content[i]:
-					cons += 1
-					#print content[i]
-				
+				if not("//" in content[i]):
+					
+					if (ENSURES in content[i] or POS in content[i]):
+						pos += 1
+						#print content[i]
+					elif (REQUIRES in content[i] or PRE in content [i]):
+						pre += 1
+						#print content[i]
+					elif INVAR in content[i]:
+						inv += 1
+						#print content[i]
+					elif CONST in content[i]:
+						cons += 1
+						#print content[i]
+					
 				if "*/" in content[i] and AT in content[i]:
 					break
 				
