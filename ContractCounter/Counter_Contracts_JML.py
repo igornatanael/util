@@ -92,7 +92,7 @@ def loc(fname):
 				count_com += 1
 				i += 1
 	count = len(content) - count_com
-	print len(content), count_com
+	#print len(content), count_com
 	return count
 
 def counter_loc(folname):
