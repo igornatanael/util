@@ -81,13 +81,18 @@ def loc(fname):
 				i += 1
 	
 	for i in range(len(content)):
-		if content[i].strip()[:2] == "//":
+		if content[i].strip()[:2] == "//" or content[i].strip() == "":
 			count_com += 1
-		elif content[i].strip()[:2] == "/*":
-			while (content[i].strip()[-2:] != "*/" and i < len(content)-1):
+			#print i, content[i], ":::", count_com
+			#raw_input()
+		elif content[i].strip()[:2] == "/*" and not("spec_public" in content[i]):
+			while (not("*/" in content[i-1]) and i < (len(content))):
+				#print i, content[i], ":::", count_com + 1
+				#raw_input()
 				count_com += 1
 				i += 1
 	count = len(content) - count_com
+	print len(content), count_com
 	return count
 
 def counter_loc(folname):
@@ -109,3 +114,4 @@ print "PRE: "+ str(pre)
 print "POST: "+ str(pos)
 print "INV: "+ str(inv)
 print "CONS: "+ str(cons)
+raw_input()
