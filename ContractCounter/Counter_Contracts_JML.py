@@ -15,7 +15,9 @@ from os import listdir
 from os.path import isfile, join
 
 pos = 0
+pos_true = 0
 pre = 0
+pre_true = 0
 inv = 0
 cons = 0
 ENSURES = "ensures"
@@ -25,6 +27,7 @@ POS = "post"
 INVAR = "invariant"
 CONST = "constraint"
 AT = "@"
+T = " true"
 
 
 
@@ -35,7 +38,9 @@ directories = [x[0] for x in os.walk(mypath)]
 def loc(fname):
 	
 	global pos
+	global pos_true
 	global pre
+	global pre_true
 	global inv
 	global cons
 	
@@ -48,9 +53,13 @@ def loc(fname):
 			if (ENSURES in content[i] or POS in content[i]):
 				pos += 1
 				#print content[i]
+				if (T in content[i]):
+					pos_true += 1
 			elif (REQUIRES in content[i] or PRE in content [i]):
 				pre += 1
 				#print content[i]
+				if (T in content[i]):
+					pre_true += 1
 			elif INVAR in content[i]:
 				inv += 1
 				#print content[i]
@@ -111,7 +120,9 @@ def total_loc(folname):
 	
 print "LOC: " + str(total_loc(mypath))
 print "PRE: "+ str(pre)
+print "Preconditions true (default): " + str(pre_true)
 print "POST: "+ str(pos)
+print "Postconditions true (default): " + str(pos_true)
 print "INV: "+ str(inv)
 print "CONS: "+ str(cons)
 raw_input()
