@@ -10,7 +10,7 @@ and calculate the numbers of lines of code (LOC), preconditions
 (PRE), postconditions (POST), invariants (INV), and constraints (CONS).
 '''
 
-import os
+import os, sys
 from os import listdir
 from os.path import isfile, join
 
@@ -20,6 +20,12 @@ pre = 0
 pre_true = 0
 inv = 0
 cons = 0
+old = 0
+forall = 0
+exist = 0
+FORALL = "\forall"
+EXIST = "\exist"
+OLD = "\old"
 ENSURES = "ensures"
 REQUIRES = "requires"
 PRE = "pre"
@@ -32,9 +38,11 @@ T = " true"
 
 
 mypath = os.getcwd()
-
 directories = [x[0] for x in os.walk(mypath)]
-    
+
+
+
+
 def loc(fname):
 	
 	global pos
@@ -43,6 +51,9 @@ def loc(fname):
 	global pre_true
 	global inv
 	global cons
+	global old
+	global exist
+	global forall
 	
 	with open(fname) as f:
 		content = f.readlines()
@@ -50,6 +61,16 @@ def loc(fname):
 	
 	for i in range(len(content)):
 		if (AT in content[i] and "//" in content[i]):
+		
+			#checking quantifies
+			if (FORALL in content[i]):
+				forall += 1
+			if (EXIST in content[i]):
+				exist += 1
+			if (OLD in content[i]):
+				old +=1 
+					
+			#checking clausules
 			if (ENSURES in content[i] or POS in content[i]):
 				pos += 1
 				#print content[i]
@@ -71,10 +92,19 @@ def loc(fname):
 			while (i < len(content)-1):
 				if not("//" in content[i]):
 					
+					#checking quantifies
+					if (FORALL in content[i]):
+						forall += 1
+					if (EXIST in content[i]):
+						exist += 1
+					if (OLD in content[i]):
+						old +=1 
+						
+					#checking clausules
 					if (ENSURES in content[i] or POS in content[i]):
 						pos += 1
 						#print content[i]
-					elif (REQUIRES in content[i] or PRE in content [i]):
+					elif (REQUIRES in content[i] or PRE in content[i]):
 						pre += 1
 						#print content[i]
 					elif INVAR in content[i]:
@@ -106,13 +136,12 @@ def loc(fname):
 
 def counter_loc(folname):
     count = 0
-    only_cs_files = [ f for f in listdir(folname) if (f[-5:] == ".java" or f[-4:] == ".jml" or f[-5:] == ".spec" or f[-13:] == ".java-refined" or f[-12:] == ".jml-refined") and isfile(join(folname,f)) ]
-    for i in only_cs_files:
+    only_jml_files = [ f for f in listdir(folname) if (f[-5:] == ".java" or f[-4:] == ".jml" or f[-5:] == ".spec" or f[-13:] == ".java-refined" or f[-12:] == ".jml-refined") and isfile(join(folname,f)) ]
+    for i in only_jml_files:
         count += loc(folname+"/" +i)
     return count
 
 def total_loc(folname):
-    
     count = 0
     for i in directories:
         count += counter_loc(i)
@@ -125,4 +154,7 @@ print "POST: "+ str(pos)
 print "Postconditions true (default): " + str(pos_true)
 print "INV: "+ str(inv)
 print "CONS: "+ str(cons)
+print "FORALL: " + str(forall)
+print "EXIST: " + str(exist)
+print "OLD VALUE: " + str(old)
 raw_input()
