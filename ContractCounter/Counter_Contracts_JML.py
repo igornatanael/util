@@ -10,7 +10,7 @@ and calculate the numbers of lines of code (LOC), preconditions
 (PRE), postconditions (POST), invariants (INV), and constraints (CONS).
 '''
 
-import os, sys
+import os, sys, csv
 from os import listdir
 from os.path import isfile, join
 
@@ -39,8 +39,6 @@ T = " true"
 
 mypath = os.getcwd()
 directories = [x[0] for x in os.walk(mypath)]
-
-
 
 
 def loc(fname):
@@ -146,8 +144,16 @@ def total_loc(folname):
     for i in directories:
         count += counter_loc(i)
     return count
-	
-print "LOC: " + str(total_loc(mypath))
+
+loc = total_loc(mypath)
+
+myfile = open("results.csv", 'wb')
+wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+attbr = ["LOC", "Preconditions", "Pre-defauts", "Postconditions", "Post-defaults", "Invariants", "Constraints", "Forall", "Exist", "Old value"]
+wr.writerow(attbr)
+wr.writerow([loc, pre, pre_true, pos, pos_true, inv, cons, forall, exist, old])
+
+print "LOC: " + str(loc)
 print "PRE: "+ str(pre)
 print "Preconditions true (default): " + str(pre_true)
 print "POST: "+ str(pos)
