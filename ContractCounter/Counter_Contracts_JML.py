@@ -163,4 +163,5 @@ print "CONS: "+ str(cons)
 print "FORALL: " + str(forall)
 print "EXIST: " + str(exist)
 print "OLD VALUE: " + str(old)
+print "\nAll the values were saved in \"results.csv\" file."
 raw_input()
