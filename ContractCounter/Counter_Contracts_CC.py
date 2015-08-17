@@ -13,9 +13,23 @@ CodeContracts (LOCC).
 '''
 
 
-import os
+import os, sys, csv
 from os import listdir
 from os.path import isfile, join
+
+pos = 0
+pre = 0
+inv = 0
+old = 0
+forall = 0
+exist = 0
+FORALL = ".ForAll("
+EXIST = ".Exist("
+OLD = ".Old("
+ENSURES = ".Ensures("
+REQUIRES = ".Requires("	
+INVAR = ".Invariant("
+
 
 
 CONTRACT = "Contract."
@@ -49,14 +63,37 @@ def total_loc(folname):
     return count
 
 def contracts_counter(fname):
+    global pos
+    global pre
+    global inv
+    global cons
+    global old
+    global exist
+    global forall
+    
     count = 0
+	
     with open(fname) as f:
-        content = f.readlines()
+	content = f.readlines()
 
     for i in content:
         aux = i.strip()[:9]
         if aux == CONTRACT:
             count += 1
+            if EXIST in i:
+		    exist += 1
+	    if FORAL in i:
+		    forall += 1
+	    if ENSURES in i:
+		    pos += 1
+	    if REQUIRES in i:
+		    pre += 1
+	    if OLD in i:
+		    old += 1
+	    if INVAR in i:
+		    inv += 1
+	    
+		
     return count
 
 def folder_contracts_num(folname):
@@ -72,6 +109,22 @@ def total_pro_contracts(folname):
         count += folder_contracts_num(i)
     return count
 
-print "LOC: " + str(total_loc(mypath))
-print "LOCC: "+ str(total_pro_contracts(mypath))
+loc = total_loc(mypath)
+locc = total_pro_contracts(mypath)
+
+myfile = open("results.csv", 'wb')
+wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+attbr = ["LOC", "LOCC", "Preconditions",  "Postconditions",  "Invariants",  "Forall", "Exist", "Old value"]
+wr.writerow(attbr)
+wr.writerow([loc, locc, pre,  pos,  inv, forall, exist, old])
+
+print "LOC: " + str(loc)
+print "LOCC: " + str(locc)
+print "PRE: "+ str(pre)
+print "POST: "+ str(pos)
+print "INV: "+ str(inv)
+print "FORALL: " + str(forall)
+print "EXIST: " + str(exist)
+print "OLD VALUE: " + str(old)
+print "\nAll the values were saved in \"results.csv\" file."
 raw_input()
