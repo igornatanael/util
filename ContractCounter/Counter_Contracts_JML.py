@@ -154,6 +154,7 @@ wr.writerow(attbr)
 wr.writerow([loc, pre, pre_true, pos, pos_true, inv, cons, forall, exist, old])
 
 print "LOC: " + str(loc)
+print "CJML: " + str(pre+pos+inv)
 print "PRE: "+ str(pre)
 print "Preconditions true (default): " + str(pre_true)
 print "POST: "+ str(pos)
