@@ -79,7 +79,7 @@ def loc(fname):
 				#print content[i]
 				if (T in content[i]):
 					pre_true += 1
-			elif INVAR in content[i]:
+			elif INVAR in content[i] and "loop_invariant" not in content[i]:
 				inv += 1
 				#print content[i]
 			elif CONST in content[i]:
@@ -105,7 +105,7 @@ def loc(fname):
 					elif (REQUIRES in content[i] or PRE in content[i]):
 						pre += 1
 						#print content[i]
-					elif INVAR in content[i]:
+					elif INVAR in content[i] and "loop_invariant" not in content[i]:
 						inv += 1
 						#print content[i]
 					elif CONST in content[i]:

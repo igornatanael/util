@@ -53,7 +53,7 @@ def counter_loc(folname):
     count = 0
     only_cs_files = [ f for f in listdir(folname) if (f[-3:] == ".cs") and isfile(join(folname,f)) ]
     for i in only_cs_files:
-        count += loc(folname+"\\" +i)
+        count += loc(join(folname,i))
     return count
 
 def total_loc(folname):
@@ -82,7 +82,7 @@ def contracts_counter(fname):
             count += 1
             if EXIST in i:
 		    exist += 1
-	    if FORAL in i:
+	    if FORALL in i:
 		    forall += 1
 	    if ENSURES in i:
 		    pos += 1
@@ -100,7 +100,7 @@ def folder_contracts_num(folname):
     count = 0
     only_cs_files = [ f for f in listdir(folname) if (f[-3:] == ".cs") and isfile(join(folname,f)) ]
     for i in only_cs_files:
-        count += contracts_counter(folname+"\\" +i)
+        count += contracts_counter(join(folname,i))
     return count
 
 def total_pro_contracts(folname):
