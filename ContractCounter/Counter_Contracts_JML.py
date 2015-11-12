@@ -102,9 +102,13 @@ def loc(fname):
 					if (ENSURES in content[i] or POS in content[i]):
 						pos += 1
 						#print content[i]
+						if (T in content[i]):
+                                                        pos_true += 1
 					elif (REQUIRES in content[i] or PRE in content[i]):
 						pre += 1
 						#print content[i]
+						if (T in content[i]):
+                                                        pre_true += 1
 					elif INVAR in content[i] and "loop_invariant" not in content[i]:
 						inv += 1
 						#print content[i]
@@ -146,15 +150,16 @@ def total_loc(folname):
     return count
 
 loc = total_loc(mypath)
+cjml = pre+pos+inv+cons
 
 myfile = open("results.csv", 'wb')
 wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-attbr = ["LOC", "Preconditions", "Pre-defauts", "Postconditions", "Post-defaults", "Invariants", "Constraints", "Forall", "Exist", "Old value"]
+attbr = ["LOC", "CJML", "Preconditions", "Pre-defauts", "Postconditions", "Post-defaults", "Invariants", "Constraints", "Forall", "Exist", "Old value"]
 wr.writerow(attbr)
-wr.writerow([loc, pre, pre_true, pos, pos_true, inv, cons, forall, exist, old])
+wr.writerow([loc, cjml, pre, pre_true, pos, pos_true, inv, cons, forall, exist, old])
 
 print "LOC: " + str(loc)
-print "CJML: " + str(pre+pos+inv)
+print "CJML: " + str(cjml)
 print "PRE: "+ str(pre)
 print "Preconditions true (default): " + str(pre_true)
 print "POST: "+ str(pos)
