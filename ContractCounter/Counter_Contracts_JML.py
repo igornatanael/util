@@ -34,8 +34,8 @@ INVAR = "invariant"
 CONST = "constraint"
 AT = "@"
 T = " true"
-
-
+AND = "&&"
+OR = "||"
 
 mypath = os.getcwd()
 directories = [x[0] for x in os.walk(mypath)]
@@ -62,28 +62,77 @@ def loc(fname):
 		
 			#checking quantifies
 			if (FORALL in content[i]):
-				forall += 1
+				forall += content[i].count(FORALL)
 			if (EXIST in content[i]):
-				exist += 1
+				exist += content[i].count(EXIST)
 			if (OLD in content[i]):
-				old +=1 
+				old += content[i].count(OLD)
 					
 			#checking clausules
 			if (ENSURES in content[i] or POS in content[i]):
-				pos += 1
+                                if(ENSURES in content[i]):
+                                        aux = content[i].rsplit(ENSURES)
+                                        aux = aux[1]
+                                        if(AND in aux):
+                                                pos += len(aux.split(AND))
+                                        elif(OR in aux):
+                                                pos += len(aux.split(OR))
+                                        else:
+                                                pos += 1
+                                elif(POS in content[i]):
+                                        aux = content[i].rsplit(POS)
+                                        aux = aux[1]
+                                        if(AND in aux):
+                                                pos += len(aux.split(AND))
+                                        elif(OR in aux):
+                                                pos += len(aux.split(OR))
+                                        else:
+                                                pos += 1                                
 				#print content[i]
 				if (T in content[i]):
-					pos_true += 1
+					pos_true += content[i].count(T)
 			elif (REQUIRES in content[i] or PRE in content [i]):
-				pre += 1
+				if(REQUIRES in content[i]):
+                                        aux = content[i].rsplit(REQUIRES)
+                                        aux = aux[1]
+                                        if(AND in aux):
+                                                pre += len(aux.split(AND))
+                                        elif(OR in aux):
+                                                pre += len(aux.split(OR))
+                                        else:
+                                                pre += 1
+                                elif(PRE in content[i]):
+                                        aux = content[i].rsplit(PRE)
+                                        aux = aux[1]
+                                        if(AND in aux):
+                                                pre += len(aux.split(AND))
+                                        elif(OR in aux):
+                                                pre += len(aux.split(OR))
+                                        else:
+                                                pre += 1
 				#print content[i]
 				if (T in content[i]):
-					pre_true += 1
+					pre_true += content[i].count(T)
 			elif INVAR in content[i] and "loop_invariant" not in content[i]:
-				inv += 1
+				aux = content[i].rsplit(INVAR)
+                                aux = aux[1]
+                                if(AND in aux):
+                                        inv += len(aux.split(AND))
+                                elif(OR in aux):
+                                        inv += len(aux.split(OR))
+                                else:
+                                        inv += 1
 				#print content[i]
 			elif CONST in content[i]:
-				cons += 1
+				aux = content[i].rsplit(CONST)
+                                aux = aux[1]
+                                if(AND in aux):
+                                        cons += len(aux.split(AND))
+                                elif(OR in aux):
+                                        cons += len(aux.split(OR))
+                                else:
+                                        cons += 1
+                          
 				#print content[i]
 		elif ((AT in content[i] and "/*" in content[i])):
 
@@ -92,28 +141,76 @@ def loc(fname):
 					
 					#checking quantifies
 					if (FORALL in content[i]):
-						forall += 1
+						forall += content[i].count(FORALL)
 					if (EXIST in content[i]):
-						exist += 1
+						exist += content[i].count(EXIST)
 					if (OLD in content[i]):
-						old +=1 
+						old += content[i].count(OLD)
 						
 					#checking clausules
 					if (ENSURES in content[i] or POS in content[i]):
-						pos += 1
+						if(ENSURES in content[i]):
+                                                        aux = content[i].rsplit(ENSURES)
+                                                        aux = aux[1]
+                                                        if(AND in aux):
+                                                                pos += len(aux.split(AND))
+                                                        elif(OR in aux):
+                                                                pos += len(aux.split(OR))
+                                                        else:
+                                                                pos += 1
+                                                elif(POS in content[i]):
+                                                        aux = content[i].rsplit(POS)
+                                                        aux = aux[1]
+                                                        if(AND in aux):
+                                                                pos += len(aux.split(AND))
+                                                        elif(OR in aux):
+                                                                pos += len(aux.split(OR))
+                                                        else:
+                                                                pos += 1
 						#print content[i]
 						if (T in content[i]):
-                                                        pos_true += 1
+                                                        pos_true += content[i].count(T)
 					elif (REQUIRES in content[i] or PRE in content[i]):
-						pre += 1
+						if(REQUIRES in content[i]):
+                                                        aux = content[i].rsplit(REQUIRES)
+                                                        aux = aux[1]
+                                                        if(AND in aux):
+                                                                pre += len(aux.split(AND))
+                                                        elif(OR in aux):
+                                                                pre += len(aux.split(OR))
+                                                        else:
+                                                                pre += 1
+                                                elif(PRE in content[i]):
+                                                        aux = content[i].rsplit(PRE)
+                                                        aux = aux[1]
+                                                        if(AND in aux):
+                                                                pre += len(aux.split(AND))
+                                                        elif(OR in aux):
+                                                                pre += len(aux.split(OR))
+                                                        else:
+                                                                pre += 1
 						#print content[i]
 						if (T in content[i]):
-                                                        pre_true += 1
+                                                        pre_true += content[i].count(T)
 					elif INVAR in content[i] and "loop_invariant" not in content[i]:
-						inv += 1
+						aux = content[i].rsplit(INVAR)
+                                                aux = aux[1]
+                                                if(AND in aux):
+                                                        inv += len(aux.split(AND))
+                                                elif(OR in aux):
+                                                        inv += len(aux.split(OR))
+                                                else:
+                                                        inv += 1
 						#print content[i]
 					elif CONST in content[i]:
-						cons += 1
+						aux = content[i].rsplit(CONST)
+                                                aux = aux[1]
+                                                if(AND in aux):
+                                                        cons += len(aux.split(AND))
+                                                elif(OR in aux):
+                                                        cons += len(aux.split(OR))
+                                                else:
+                                                        cons += 1
 						#print content[i]
 					
 				if "*/" in content[i] and AT in content[i]:
