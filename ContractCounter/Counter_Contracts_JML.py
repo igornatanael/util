@@ -157,6 +157,7 @@ def loc(fname):
                                                                 i +=1
                                                                 if("*/" in content[i] and AT in content[i]): break
                                                                 count_pre_defaults(content[i])
+                                                                count_quantifiers(content[i])
                                                                 pre += count_clauses(content[i], AT)
                                                                 if(";" in content[i] and not FORALL in content[i] and not EXIST in content[i]): break
                                                         
@@ -167,6 +168,7 @@ def loc(fname):
                                                         while 1:
                                                                 i+=1
                                                                 if("*/" in content[i] and AT in content[i]): break
+                                                                count_quantifiers(content[i])
                                                                 inv += count_clauses(content[i], AT)
                                         # constraint
 					elif CONST in content[i]:
@@ -175,6 +177,7 @@ def loc(fname):
                                                         while 1:
                                                                 i+=1
                                                                 if("*/" in content[i] and AT in content[i]): break
+                                                                count_quantifiers(content[i])
                                                                 cons += count_clauses(content[i], AT)
                                                                 
 				if "*/" in content[i] and AT in content[i]:
