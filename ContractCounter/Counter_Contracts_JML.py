@@ -62,10 +62,6 @@ def count_clauses(text, key):
                 if(not FORALL in t and not EXIST in t):
                         if(AND in t):
                                 val += len(t.split(AND))
-                        elif(OR in t):
-                                val += len(t.split(OR))
-                        elif(LOGICIMPL in t):
-                                val += len(t.split(LOGICIMPL))
                         else:
                                 val +=1
                 else:
