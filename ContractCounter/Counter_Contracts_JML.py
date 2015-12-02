@@ -42,6 +42,38 @@ OR = "||"
 mypath = os.getcwd()
 directories = [x[0] for x in os.walk(mypath)]
 
+# Function for removing string ends.
+def remove_end(s):
+        s = s.rstrip()
+        s = s.rstrip(AND)
+        s = s.rstrip(OR)
+        s = s.rstrip(LOGICIMPL)
+        return s
+
+# Function for counting clauses
+def count_clauses(text, key):
+        text = remove_end(text)
+        val = 0
+        t = ""
+        if(key in text):
+                t = text.rsplit(key)
+                t = t[1]
+                if(t == ''): return val
+                if(not FORALL in t and not EXIST in t):
+                        if(AND in t):
+                                val += len(t.split(AND))
+                        elif(OR in t):
+                                val += len(t.split(OR))
+                        elif(LOGICIMPL in t):
+                                val += len(t.split(LOGICIMPL))
+                        else:
+                                val +=1
+                else:
+                        val +=1
+        return val
+
+
+# Function for updating quantifiers, old and logic impl values
 def count_quantifiers(s):
         global old
 	global exist
@@ -81,281 +113,70 @@ def loc(fname):
 	
 	for i in range(len(content)):
 		if (AT in content[i] and "//" in content[i]):
-		
 			count_quantifiers(content[i])
-					
 			#checking clausules
 			if (ENSURES in content[i] or POS in content[i]):
-                                if(ENSURES in content[i]):
-                                        aux = content[i].rsplit(ENSURES)
-                                        aux = aux[1]
-                                        if(AND in aux):
-                                                pos += len(aux.split(AND))
-                                        elif(OR in aux):
-                                                pos += len(aux.split(OR))
-                                        else:
-                                                pos += 1
-                                elif(POS in content[i]):
-                                        aux = content[i].rsplit(POS)
-                                        aux = aux[1]
-                                        if(AND in aux):
-                                                pos += len(aux.split(AND))
-                                        elif(OR in aux):
-                                                pos += len(aux.split(OR))
-                                        else:
-                                                pos += 1                                
-				#print content[i]
                                 count_post_defaults(content[i])
+                                pos += count_clauses(content[i], ENSURES)
+                                pos += count_clauses(content[i], POS)                                
 			elif (REQUIRES in content[i] or PRE in content [i]):
-				if(REQUIRES in content[i]):
-                                        aux = content[i].rsplit(REQUIRES)
-                                        aux = aux[1]
-                                        if(AND in aux):
-                                                pre += len(aux.split(AND))
-                                        elif(OR in aux):
-                                                pre += len(aux.split(OR))
-                                        else:
-                                                pre += 1
-                                elif(PRE in content[i]):
-                                        aux = content[i].rsplit(PRE)
-                                        aux = aux[1]
-                                        if(AND in aux):
-                                                pre += len(aux.split(AND))
-                                        elif(OR in aux):
-                                                pre += len(aux.split(OR))
-                                        else:
-                                                pre += 1
-				#print content[i]
-				count_pre_defaults(content[i])
+                                count_pre_defaults(content[i])
+                                pre += count_clauses(content[i], REQUIRES)
+                                pre += count_clauses(content[i], PRE)
 			elif INVAR in content[i] and "loop_invariant" not in content[i]:
-				aux = content[i].rsplit(INVAR)
-                                aux = aux[1]
-                                if(AND in aux):
-                                        inv += len(aux.split(AND))
-                                elif(OR in aux):
-                                        inv += len(aux.split(OR))
-                                else:
-                                        inv += 1
-				#print content[i]
+				inv += count_clauses(content[i], INVAR)
 			elif CONST in content[i]:
-				aux = content[i].rsplit(CONST)
-                                aux = aux[1]
-                                if(AND in aux):
-                                        cons += len(aux.split(AND))
-                                elif(OR in aux):
-                                        cons += len(aux.split(OR))
-                                else:
-                                        cons += 1
-                          
-				#print content[i]
-		elif ((AT in content[i] and "/*" in content[i])):
+				cons += count_clauses(content[i], CONST)
 
+		elif ((AT in content[i] and "/*" in content[i])):
 			while (i < len(content)-1):
-				if not("//" in content[i]):
-					
-					count_quantifiers(content[i])
-						
+				if not("//" in content[i]):					
+					count_quantifiers(content[i])						
 					#checking clausules
 					# postcondition
 					if (ENSURES in content[i] or POS in content[i]):
-                                                if(ENSURES in content[i]):
-                                                        count_post_defaults(content[i])
-                                                        aux = content[i].rsplit(ENSURES)
-                                                        aux[1] = aux[1].rstrip()
-                                                        if(aux[1] != ''):
-                                                                aux = aux[1]
-                                                                if(AND in aux):
-                                                                        pos += len(aux.split(AND))
-                                                                elif(OR in aux):
-                                                                        pos += len(aux.split(OR))
-                                                                elif(LOGICIMPL in aux):
-                                                                        pos += len(aux.split(LOGICIMPL))
-                                                                else:
-                                                                        pos += 1
-                                                        else:
+                                                count_post_defaults(content[i])
+                                                pos += count_clauses(content[i], ENSURES)
+                                                pos += count_clauses(content[i], POS)
+                                                if(not ";" in content[i]):
+                                                        while 1:
                                                                 i+=1
-                                                                while 1:
-                                                                        count_post_defaults(content[i])
-                                                                        count_quantifiers(content[i])
-                                                                        aux = content[i].rstrip()
-                                                                        aux = aux.rstrip(AND)
-                                                                        aux = aux.rstrip(OR)
-                                                                        aux = aux.rstrip(LOGICIMPL)
-                                                                        if(AND in aux and not FORALL in aux and not EXIST in aux):
-                                                                                pos += len(aux.split(AND))
-                                                                        elif(OR in aux and not FORALL in aux and not EXIST in aux):
-                                                                                pos += len(aux.split(OR))
-                                                                        elif(LOGICIMPL in aux):
-                                                                                pos += len(aux.split(LOGICIMPL))
-                                                                        else:
-                                                                                pos += 1
-                                                                        if(";" in aux and not FORALL in aux and not EXIST in aux): break
-                                                                        i+=1
-                                                elif(POS in content[i]):
-                                                        count_post_defaults(content[i])
-                                                        aux = content[i].rsplit(POS)
-                                                        aux[1] = aux[1].rstrip()
-                                                        if(aux[1] != ''):
-                                                                aux = aux[1]
-                                                                if(AND in aux):
-                                                                        pos += len(aux.split(AND))
-                                                                elif(OR in aux):
-                                                                        pos += len(aux.split(OR))
-                                                                elif(LOGICIMPL in aux):
-                                                                        pos += len(aux.split(LOGICIMPL))
-                                                                else:
-                                                                        pos += 1
-                                                        else:
-                                                                i+=1
-                                                                while 1:
-                                                                        count_post_defaults(content[i])
-                                                                        count_quantifiers(content[i])
-                                                                        aux = content[i].rstrip()
-                                                                        aux = aux.rstrip(AND)
-                                                                        aux = aux.rstrip(OR)
-                                                                        aux = aux.rstrip(LOGICIMPL)
-                                                                        if(AND in aux and not FORALL in aux and not EXIST in aux):
-                                                                                pos += len(aux.split(AND))
-                                                                        elif(OR in aux and not FORALL in aux and not EXIST in aux):
-                                                                                pos += len(aux.split(OR))
-                                                                        elif(LOGICIMPL in aux):
-                                                                                pos += len(aux.split(LOGICIMPL))
-                                                                        else:
-                                                                                pos += 1
-                                                                        if(";" in aux and not FORALL in aux and not EXIST in aux): break
-                                                                        i+=1
+                                                                if("*/" in content[i] and AT in content[i]): break
+                                                                count_post_defaults(content[i])
+                                                                count_quantifiers(content[i])
+                                                                pos += count_clauses(content[i], AT)
+                                                                if(";" in content[i] and not FORALL in content[i] and not EXIST in content[i]): break
+
                                         # precondition
 					elif (REQUIRES in content[i] or PRE in content[i]):
-						if(REQUIRES in content[i]):
-                                                        count_pre_defaults(content[i])
-                                                        aux = content[i].rsplit(REQUIRES)
-                                                        aux[1] = aux[1].rstrip()
-                                                        if(aux[1] != ''):
-                                                                aux = aux[1]
-                                                                if(AND in aux):
-                                                                        pre += len(aux.split(AND))
-                                                                elif(OR in aux):
-                                                                        pre += len(aux.split(OR))
-                                                                elif(LOGICIMPL in aux):
-                                                                        pre += len(aux.split(LOGICIMPL))
-                                                                else:
-                                                                        pre += 1
-                                                        else:
+                                                count_pre_defaults(content[i])
+                                                pre += count_clauses(content[i], REQUIRES)
+                                                pre += count_clauses(content[i], PRE)
+                                                if(not ";" in content[i]):
+                                                        while 1:
                                                                 i +=1
-                                                                while 1:
-                                                                        count_pre_defaults(content[i])
-                                                                        count_quantifiers(content[i])
-                                                                        aux = content[i].rstrip()
-                                                                        aux = aux.rstrip(AND)
-                                                                        aux = aux.rstrip(OR)
-                                                                        aux = aux.rstrip(LOGICIMPL)
-                                                                        if(AND in aux and not FORALL in aux and not EXIST in aux):
-                                                                                pre += len(aux.split(AND))
-                                                                        elif(OR in aux and not FORALL in aux and not EXIST in aux):
-                                                                                pre += len(aux.split(OR))
-                                                                        elif(LOGICIMPL in aux):
-                                                                                pre += len(aux.split(LOGICIMPL))
-                                                                        else:
-                                                                                pre += 1
-                                                                        if(";" in aux and not FORALL in aux and not EXIST in aux): break
-                                                                        i+=1
-                                                elif(PRE in content[i]):
-                                                        count_pre_defaults(content[i])
-                                                        aux = content[i].rsplit(PRE)
-                                                        aux[1] = aux[1].rstrip()
-                                                        if(aux[1] != ''):
-                                                                aux = aux[1]
-                                                                if(AND in aux):
-                                                                        pre += len(aux.split(AND))
-                                                                elif(OR in aux):
-                                                                        pre += len(aux.split(OR))
-                                                                elif(LOGICIMPL in aux):
-                                                                        pre += len(aux.split(LOGICIMPL))
-                                                                else:
-                                                                        pre += 1
-                                                        else:
-                                                                i +=1
-                                                                while 1:
-                                                                        count_pre_defaults(content[i])
-                                                                        count_quantifiers(content[i])
-                                                                        aux = content[i].rstrip()
-                                                                        aux = aux.rstrip(AND)
-                                                                        aux = aux.rstrip(OR)
-                                                                        aux = aux.rstrip(LOGICIMPL)
-                                                                        if(AND in aux and not FORALL in aux and not EXIST in aux):
-                                                                                pre += len(aux.split(AND))
-                                                                        elif(OR in aux and not FORALL in aux and not EXIST in aux):
-                                                                                pre += len(aux.split(OR))
-                                                                        elif(LOGICIMPL in aux):
-                                                                                pre += len(aux.split(LOGICIMPL))
-                                                                        else:
-                                                                                pre += 1
-                                                                        if(";" in aux and not FORALL in aux and not EXIST in aux): break
-                                                                        i+=1
+                                                                if("*/" in content[i] and AT in content[i]): break
+                                                                count_pre_defaults(content[i])
+                                                                pre += count_clauses(content[i], AT)
+                                                                if(";" in content[i] and not FORALL in content[i] and not EXIST in content[i]): break
+                                                        
 					# invariant
 					elif INVAR in content[i] and "loop_invariant" not in content[i]:
-                                                aux = content[i].rsplit(INVAR)
-                                                aux[1] = aux[1].rstrip()
-                                                if(aux[1] != ''):
-                                                        aux = aux[1]
-                                                        if(AND in aux):
-                                                                inv += len(aux.split(AND))
-                                                        elif(OR in aux):
-                                                                inv += len(aux.split(OR))
-                                                        elif(LOGICIMPL in aux):
-                                                                inv += len(aux.split(LOGICIMPL))
-                                                        else:
-                                                                inv += 1
-                                                else :
-                                                        i +=1
+                                                inv += count_clauses(content[i], INVAR)
+                                                if(not ";" in content[i]):
                                                         while 1:
-                                                                count_quantifiers(content[i])
-                                                                aux = content[i].rstrip()
-                                                                aux = aux.rstrip(AND)
-                                                                aux = aux.rstrip(OR)
-                                                                aux = aux.rstrip(LOGICIMPL)
-                                                                if("*/" in aux and AT in aux): break
-                                                                if(AND in aux and not FORALL in aux and not EXIST in aux):
-                                                                        inv += len(aux.split(AND))
-                                                                elif(OR in aux and not FORALL in aux and not EXIST in aux):
-                                                                        inv += len(aux.split(OR))
-                                                                elif(LOGICIMPL in aux):
-                                                                        inv += len(aux.split(LOGICIMPL))
-                                                                else:
-                                                                        inv += 1
                                                                 i+=1
+                                                                if("*/" in content[i] and AT in content[i]): break
+                                                                inv += count_clauses(content[i], AT)
                                         # constraint
 					elif CONST in content[i]:
-						aux = content[i].rsplit(CONST)
-						aux[1] = aux[1].rstrip()
-                                                if(aux[1] != ''):
-                                                        aux = aux[1]
-                                                        if(AND in aux):
-                                                                cons += len(aux.split(AND))
-                                                        elif(OR in aux):
-                                                                cons += len(aux.split(OR))
-                                                        elif(LOGICIMPL in aux):
-                                                                cons += len(aux.split(LOGICIMPL))
-                                                        else:
-                                                                cons += 1
-                                                else:
-                                                        i += 1
+                                                cons += count_clauses(content[i], CONST)
+                                                if(not ";" in content[i]):
                                                         while 1:
-                                                                count_quantifiers(content[i])
-                                                                aux = content[i].rstrip()
-                                                                aux = aux.rstrip(AND)
-                                                                aux = aux.rstrip(OR)
-                                                                aux = aux.rstrip(LOGICIMPL)
-                                                                if("*/" in aux and AT in aux): break
-                                                                if(AND in aux and not FORALL in aux and not EXIST in aux):
-                                                                        cons += len(aux.split(AND))
-                                                                elif(OR in aux and not FORALL in aux and not EXIST in aux):
-                                                                        cons += len(aux.split(OR))
-                                                                elif(LOGICIMPL in aux):
-                                                                        cons += len(aux.split(LOGICIMPL))
-                                                                else:
-                                                                        cons += 1
                                                                 i+=1
+                                                                if("*/" in content[i] and AT in content[i]): break
+                                                                cons += count_clauses(content[i], AT)
+                                                                
 				if "*/" in content[i] and AT in content[i]:
 					break
 				
