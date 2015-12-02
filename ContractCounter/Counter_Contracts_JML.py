@@ -23,9 +23,11 @@ cons = 0
 old = 0
 forall = 0
 exist = 0
+logic_impl = 0
 FORALL = "\\forall"
 EXIST = "\exist"
 OLD = "\old"
+LOGICIMPL = "==>"
 ENSURES = "ensures"
 REQUIRES = "requires"
 PRE = "pre"
@@ -44,6 +46,7 @@ def count_quantifiers(s):
         global old
 	global exist
 	global forall
+	global logic_impl
 	
         #checking quantifies
         if (FORALL in s):
@@ -52,6 +55,8 @@ def count_quantifiers(s):
 		exist += s.count(EXIST)
 	if (OLD in s):
 		old += s.count(OLD)
+	if (LOGICIMPL in s):
+                logic_impl += s.count(LOGICIMPL)
 
 def count_pre_defaults(s):
         global pre_true
@@ -151,6 +156,7 @@ def loc(fname):
 					count_quantifiers(content[i])
 						
 					#checking clausules
+					# postcondition
 					if (ENSURES in content[i] or POS in content[i]):
                                                 if(ENSURES in content[i]):
                                                         count_post_defaults(content[i])
@@ -162,6 +168,8 @@ def loc(fname):
                                                                         pos += len(aux.split(AND))
                                                                 elif(OR in aux):
                                                                         pos += len(aux.split(OR))
+                                                                elif(LOGICIMPL in aux):
+                                                                        pos += len(aux.split(LOGICIMPL))
                                                                 else:
                                                                         pos += 1
                                                         else:
@@ -171,13 +179,17 @@ def loc(fname):
                                                                         count_quantifiers(content[i])
                                                                         aux = content[i].rstrip()
                                                                         aux = aux.rstrip(AND)
-                                                                        if("*/" in aux and AT in aux): break
+                                                                        aux = aux.rstrip(OR)
+                                                                        aux = aux.rstrip(LOGICIMPL)
                                                                         if(AND in aux and not FORALL in aux and not EXIST in aux):
                                                                                 pos += len(aux.split(AND))
                                                                         elif(OR in aux and not FORALL in aux and not EXIST in aux):
                                                                                 pos += len(aux.split(OR))
+                                                                        elif(LOGICIMPL in aux):
+                                                                                pos += len(aux.split(LOGICIMPL))
                                                                         else:
                                                                                 pos += 1
+                                                                        if(";" in aux and not FORALL in aux and not EXIST in aux): break
                                                                         i+=1
                                                 elif(POS in content[i]):
                                                         count_post_defaults(content[i])
@@ -189,6 +201,8 @@ def loc(fname):
                                                                         pos += len(aux.split(AND))
                                                                 elif(OR in aux):
                                                                         pos += len(aux.split(OR))
+                                                                elif(LOGICIMPL in aux):
+                                                                        pos += len(aux.split(LOGICIMPL))
                                                                 else:
                                                                         pos += 1
                                                         else:
@@ -198,14 +212,19 @@ def loc(fname):
                                                                         count_quantifiers(content[i])
                                                                         aux = content[i].rstrip()
                                                                         aux = aux.rstrip(AND)
-                                                                        if("*/" in aux and AT in aux): break
+                                                                        aux = aux.rstrip(OR)
+                                                                        aux = aux.rstrip(LOGICIMPL)
                                                                         if(AND in aux and not FORALL in aux and not EXIST in aux):
                                                                                 pos += len(aux.split(AND))
                                                                         elif(OR in aux and not FORALL in aux and not EXIST in aux):
                                                                                 pos += len(aux.split(OR))
+                                                                        elif(LOGICIMPL in aux):
+                                                                                pos += len(aux.split(LOGICIMPL))
                                                                         else:
                                                                                 pos += 1
+                                                                        if(";" in aux and not FORALL in aux and not EXIST in aux): break
                                                                         i+=1
+                                        # precondition
 					elif (REQUIRES in content[i] or PRE in content[i]):
 						if(REQUIRES in content[i]):
                                                         count_pre_defaults(content[i])
@@ -217,6 +236,8 @@ def loc(fname):
                                                                         pre += len(aux.split(AND))
                                                                 elif(OR in aux):
                                                                         pre += len(aux.split(OR))
+                                                                elif(LOGICIMPL in aux):
+                                                                        pre += len(aux.split(LOGICIMPL))
                                                                 else:
                                                                         pre += 1
                                                         else:
@@ -226,13 +247,17 @@ def loc(fname):
                                                                         count_quantifiers(content[i])
                                                                         aux = content[i].rstrip()
                                                                         aux = aux.rstrip(AND)
-                                                                        if("*/" in aux and AT in aux): break
+                                                                        aux = aux.rstrip(OR)
+                                                                        aux = aux.rstrip(LOGICIMPL)
                                                                         if(AND in aux and not FORALL in aux and not EXIST in aux):
                                                                                 pre += len(aux.split(AND))
                                                                         elif(OR in aux and not FORALL in aux and not EXIST in aux):
                                                                                 pre += len(aux.split(OR))
+                                                                        elif(LOGICIMPL in aux):
+                                                                                pre += len(aux.split(LOGICIMPL))
                                                                         else:
                                                                                 pre += 1
+                                                                        if(";" in aux and not FORALL in aux and not EXIST in aux): break
                                                                         i+=1
                                                 elif(PRE in content[i]):
                                                         count_pre_defaults(content[i])
@@ -244,6 +269,8 @@ def loc(fname):
                                                                         pre += len(aux.split(AND))
                                                                 elif(OR in aux):
                                                                         pre += len(aux.split(OR))
+                                                                elif(LOGICIMPL in aux):
+                                                                        pre += len(aux.split(LOGICIMPL))
                                                                 else:
                                                                         pre += 1
                                                         else:
@@ -253,15 +280,19 @@ def loc(fname):
                                                                         count_quantifiers(content[i])
                                                                         aux = content[i].rstrip()
                                                                         aux = aux.rstrip(AND)
-                                                                        if("*/" in aux and AT in aux): break
+                                                                        aux = aux.rstrip(OR)
+                                                                        aux = aux.rstrip(LOGICIMPL)
                                                                         if(AND in aux and not FORALL in aux and not EXIST in aux):
                                                                                 pre += len(aux.split(AND))
                                                                         elif(OR in aux and not FORALL in aux and not EXIST in aux):
                                                                                 pre += len(aux.split(OR))
+                                                                        elif(LOGICIMPL in aux):
+                                                                                pre += len(aux.split(LOGICIMPL))
                                                                         else:
                                                                                 pre += 1
+                                                                        if(";" in aux and not FORALL in aux and not EXIST in aux): break
                                                                         i+=1
-						#print content[i]
+					# invariant
 					elif INVAR in content[i] and "loop_invariant" not in content[i]:
                                                 aux = content[i].rsplit(INVAR)
                                                 aux[1] = aux[1].rstrip()
@@ -271,6 +302,8 @@ def loc(fname):
                                                                 inv += len(aux.split(AND))
                                                         elif(OR in aux):
                                                                 inv += len(aux.split(OR))
+                                                        elif(LOGICIMPL in aux):
+                                                                inv += len(aux.split(LOGICIMPL))
                                                         else:
                                                                 inv += 1
                                                 else :
@@ -279,14 +312,19 @@ def loc(fname):
                                                                 count_quantifiers(content[i])
                                                                 aux = content[i].rstrip()
                                                                 aux = aux.rstrip(AND)
+                                                                aux = aux.rstrip(OR)
+                                                                aux = aux.rstrip(LOGICIMPL)
                                                                 if("*/" in aux and AT in aux): break
                                                                 if(AND in aux and not FORALL in aux and not EXIST in aux):
                                                                         inv += len(aux.split(AND))
                                                                 elif(OR in aux and not FORALL in aux and not EXIST in aux):
                                                                         inv += len(aux.split(OR))
+                                                                elif(LOGICIMPL in aux):
+                                                                        inv += len(aux.split(LOGICIMPL))
                                                                 else:
                                                                         inv += 1
                                                                 i+=1
+                                        # constraint
 					elif CONST in content[i]:
 						aux = content[i].rsplit(CONST)
 						aux[1] = aux[1].rstrip()
@@ -296,6 +334,8 @@ def loc(fname):
                                                                 cons += len(aux.split(AND))
                                                         elif(OR in aux):
                                                                 cons += len(aux.split(OR))
+                                                        elif(LOGICIMPL in aux):
+                                                                cons += len(aux.split(LOGICIMPL))
                                                         else:
                                                                 cons += 1
                                                 else:
@@ -304,11 +344,15 @@ def loc(fname):
                                                                 count_quantifiers(content[i])
                                                                 aux = content[i].rstrip()
                                                                 aux = aux.rstrip(AND)
+                                                                aux = aux.rstrip(OR)
+                                                                aux = aux.rstrip(LOGICIMPL)
                                                                 if("*/" in aux and AT in aux): break
                                                                 if(AND in aux and not FORALL in aux and not EXIST in aux):
                                                                         cons += len(aux.split(AND))
                                                                 elif(OR in aux and not FORALL in aux and not EXIST in aux):
                                                                         cons += len(aux.split(OR))
+                                                                elif(LOGICIMPL in aux):
+                                                                        cons += len(aux.split(LOGICIMPL))
                                                                 else:
                                                                         cons += 1
                                                                 i+=1
@@ -351,20 +395,21 @@ cjml = pre+pos+inv+cons
 
 myfile = open("results.csv", 'wb')
 wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-attbr = ["LOC", "CJML", "Preconditions", "Pre-defauts", "Postconditions", "Post-defaults", "Invariants", "Constraints", "Forall", "Exist", "Old value"]
+attbr = ["LOC", "CJML", "Preconditions", "Pre-defaults", "Postconditions", "Post-defaults", "Invariants", "Constraints", "Forall", "Exist", "Old value", "Logic Impl"]
 wr.writerow(attbr)
-wr.writerow([loc, cjml, pre, pre_true, pos, pos_true, inv, cons, forall, exist, old])
+wr.writerow([loc, cjml, pre, pre_true, pos, pos_true, inv, cons, forall, exist, old, logic_impl])
 
 print "LOC: " + str(loc)
 print "CJML: " + str(cjml)
 print "PRE: "+ str(pre)
-print "Preconditions true (default): " + str(pre_true)
+print "Preconditions true: " + str(pre_true)
 print "POST: "+ str(pos)
-print "Postconditions true (default): " + str(pos_true)
+print "Postconditions true: " + str(pos_true)
 print "INV: "+ str(inv)
 print "CONS: "+ str(cons)
 print "FORALL: " + str(forall)
 print "EXIST: " + str(exist)
 print "OLD VALUE: " + str(old)
+print "LOGIC IMPL: "+ str(logic_impl)
 print "\nAll the values were saved in \"results.csv\" file."
 raw_input()
