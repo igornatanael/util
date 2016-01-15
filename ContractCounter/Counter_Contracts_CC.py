@@ -79,19 +79,28 @@ def contracts_counter(fname):
     for i in content:
         aux = i.strip()[:9]
         if aux == CONTRACT:
-            count += 1
+
+            num_clau = 1
+            if "&&" in i:
+                for n in range(len(i)-1):
+                    temp = i[n] + i[n+1]
+                    if temp == "&&":
+                        num_clau += 1
+
+            count += num_clau
+                        
             if EXIST in i:
-		    exist += 1
+		    exist += num_clau
 	    if FORALL in i:
-		    forall += 1
+		    forall += num_clau
 	    if ENSURES in i:
-		    pos += 1
+		    pos += num_clau
 	    if REQUIRES in i:
-		    pre += 1
+		    pre += num_clau
 	    if OLD in i:
-		    old += 1
+		    old += num_clau
 	    if INVAR in i:
-		    inv += 1
+		    inv += num_clau
 	    
 		
     return count
