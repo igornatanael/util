@@ -81,27 +81,26 @@ def contracts_counter(fname):
         if aux == CONTRACT:
 
             num_clau = 1
-            if "&&" in i and (ENSURES in i or REQUIRES in i):
+            if "&&" in i and not (FORALL in i or EXIST in i):
                 for n in range(len(i)-1):
                     temp = i[n] + i[n+1]
                     if temp == "&&":
                         num_clau += 1
 
-            count += num_clau
-                        
-            if EXIST in i:
-		    exist += num_clau
-	    if FORALL in i:
-		    forall += num_clau
+            if REQUIRES in i:
+		    pre += num_clau
 	    if ENSURES in i:
 		    pos += num_clau
-	    if REQUIRES in i:
-		    pre += num_clau
-	    if OLD in i:
-		    old += num_clau
-	    if INVAR in i:
+            if INVAR in i:
 		    inv += num_clau
+            if EXIST in i:
+		    exist += 1
+	    if FORALL in i:
+		    forall += 1
+	    if OLD in i:
+		    old += 1
 	    
+    count += pre + pos + inv	    
 		
     return count
 
