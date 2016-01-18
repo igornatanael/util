@@ -81,7 +81,7 @@ def contracts_counter(fname):
         if aux == CONTRACT:
 
             num_clau = 1
-            if "&&" in i:
+            if "&&" in i and (ENSURES in i or REQUIRES in i):
                 for n in range(len(i)-1):
                     temp = i[n] + i[n+1]
                     if temp == "&&":
