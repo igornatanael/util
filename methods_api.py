@@ -16,12 +16,11 @@ try:
     divs = soup.findAll("div", { "class" : "hp-api-specification hp-collapsible public hp-collapsed" })
     met = soup.findAll("span", {"class":"method hp-api-method"})
     uri = soup.findAll("span", {"class":"uri"})
-    desc = soup.findAll("description")
-    print re.sub(r"\s+", " ", desc[0].get_text()) + "\n \n"
+
     if len(uri) == len(met):
         for i in range(len(uri)):
             print met[i].get_text(), uri[i].get_text()+ "\n"
-            print re.sub(r"\s+", " ", desc[i+1].get_text())+ "\n \n"
+            print re.sub(r"\s+", " ", divs[i].find('description').get_text())+ "\n \n"
 except Exception as e:
     print e, "exeption"
 
